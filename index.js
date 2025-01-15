@@ -1,7 +1,6 @@
 const revolt = require('revolt.js');
 const revoltHandler = require('revolthandler.js');
 const config = require('./config.json');  
-const fs = require('fs');
 require('dotenv').config(); 
 const TOKEN = process.env.REVOLT_TOKEN
 
@@ -15,6 +14,7 @@ const handler = new revoltHandler.Handler({
 
 client.once('ready', () => {
     handler.start();
+    console.info(`Logged in as ${client.user.username}!`);
 });
 
 client.loginBot(TOKEN);
