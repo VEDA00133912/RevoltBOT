@@ -7,14 +7,14 @@ const TOKEN = process.env.REVOLT_TOKEN
 const client = new revolt.Client();
 const handler = new revoltHandler.Handler({
     client: client, 
-    prefix: '^', 
+    prefix: config.prefix, 
     owners: config.owners, 
     path: './commands',
 });
 
 client.once('ready', () => {
     handler.start();
-    console.info(`Logged in as ${client.user.username}!`);
+    console.log(`Logged in as ${client.user.username}!`);
 });
 
 client.loginBot(TOKEN);
