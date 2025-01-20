@@ -3,17 +3,35 @@ const { MiQ } = require('makeitaquote');
 const axios = require('axios');
 
 exports.default = {
-  name: '<@01JEN5R7Y5WT4PK9Y643QBBR0Z>', // BOTのメンション
+  name: '<@01JEN5R7Y5WT4PK9Y643QBBR0Z>', 
   nonPrefixed: true,
   async code(message) {
     await message.channel.startTyping();
     const msgIds = message.replyIds; 
 
     try {
+      if (!msgIds || msgIds.length === 0) {
+        await message.reply('リプライ先のメッセージが見つかりません。');
+        await message.channel.stopTyping();
+        return;
+      }
+
       const allMessages = await message.channel.fetchMessages();
       const replyMessages = allMessages.filter(msg => msgIds.includes(msg.id));
 
+      if (replyMessages.length === 0) {
+        await message.reply('リプライ先のメッセージが見つかりません');
+        await message.channel.stopTyping();
+        return;
+      }
+
       for (const replyMessage of replyMessages) {
+        if (!replyMessage.content) {
+          await message.reply('リプライ先のメッセージが空です');
+          await message.channel.stopTyping();
+          return;  
+        }
+
         let avatarBase64 = null;
 
         try {
@@ -43,6 +61,8 @@ exports.default = {
       }
     } catch (error) {
       console.error(`miqコマンド実行中にエラーが発生しました: ${error}`);
+      await message.reply('コマンドの実行中にエラーが発生しました');
+      await message.channel.stopTyping();
     }
   },
 };
