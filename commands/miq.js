@@ -3,8 +3,10 @@ const { MiQ } = require('makeitaquote');
 const axios = require('axios');
 
 exports.default = {
-  name: 'miq',
+  name: '<@01JEN5R7Y5WT4PK9Y643QBBR0Z>', // BOTのメンション
+  nonPrefixed: true,
   async code(message) {
+    await message.channel.startTyping();
     const msgIds = message.replyIds; 
 
     try {
@@ -15,7 +17,9 @@ exports.default = {
         let avatarBase64 = null;
 
         try {
-          const avatarResponse = await axios.get(replyMessage.avatarURL, {
+          // サイズが256だとガビガビになっちゃうので元画像を取得しておく
+          const avatarURL = replyMessage.avatarURL.replace('?max_side=256', '/original');
+          const avatarResponse = await axios.get(avatarURL, {
             responseType: 'arraybuffer',
           });
           avatarBase64 = `data:image/jpeg;base64,${Buffer.from(avatarResponse.data).toString('base64')}`;
@@ -28,13 +32,14 @@ exports.default = {
           avatar: avatarBase64, 
           username: replyMessage.username || replyMessage.authorId, 
           display_name: replyMessage.member.displayName || replyMessage.username,
-          color: false, 
+          color: message.content.includes('color'),  // colorが含まれていればtrue
           watermark: config.watermark, 
         };
 
         const miq = new MiQ().setFromObject(imageData, true);
-        const response = await miq.generate(false); // リンクを取得したいのでfalseにしておく
-        message.reply(response);
+        const response = await miq.generate(true);
+        await message.reply(response);
+        await message.channel.stopTyping();
       }
     } catch (error) {
       console.error(`miqコマンド実行中にエラーが発生しました: ${error}`);
