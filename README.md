@@ -34,7 +34,7 @@ npm start
 ## Make it a Quote
 ### 通常
 リプライ時に{BOTにメンション}をすれば生成されます<br>
-![alt text](<image/Screenshot 2025-01-20 12.41.52.png>)
+![alt text](image-1.png)
 ### カラー
 リプライ時に{BOTにメンション} colorと送ればカラーで生成されます<br>
 ![alt text](<image/Screenshot 2025-01-20 12.41.52.png>)
