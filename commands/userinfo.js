@@ -2,6 +2,11 @@ const { EmbedBuilder } = require('revolthandler.js');
 
 exports.default = {
   name: 'userinfo',
+  guildOnly: {
+    errorMsg(message) {
+        message.reply('このコマンドはサーバー内でのみ使えます');
+    },
+},
   async code(message, args) {
     const userId = args[0] ? args[0].replace(/<@!?(.*?)>/, '$1') : message.authorId;
 
