@@ -1,4 +1,4 @@
-const revolt = require('revolt.js');
+const revolt= require('revolt.js');
 const revoltHandler = require('revolthandler.js');
 const config = require('./config.json');  
 require('dotenv').config(); 
