@@ -1,4 +1,4 @@
-const revolt= require('revolt.js');
+const revolt = require('revolt.js');
 const revoltHandler = require('revolthandler.js');
 const config = require('./config.json');  
 require('dotenv').config(); 
@@ -14,7 +14,9 @@ const handler = new revoltHandler.Handler({
 
 client.once('ready', () => {
     handler.start();
-    console.log(`Logged in as ${client.user.username}!`);
+    console.log(`${client.user.username} is online!`);
+    client.api.patch('/users/@me', { status: { text: `ぬぬぬぬぬぬぬぬぬ`, presence: 'Online' } });
+    console.log('Activity setup complete');
 });
 
 client.loginBot(TOKEN);
