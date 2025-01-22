@@ -8,7 +8,7 @@ const client = new revolt.Client();
 const handler = new revoltHandler.Handler({
     client: client, 
     prefix: config.prefix, 
-    owners: config.owners, 
+    owners: [config.owners], 
     path: './commands',
 });
 

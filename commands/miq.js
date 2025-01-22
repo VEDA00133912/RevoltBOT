@@ -7,61 +7,50 @@ exports.default = {
   nonPrefixed: true,
   async code(message) {
     await message.channel.startTyping();
-    const msgIds = message.replyIds; 
+
+    const msgIds = message.replyIds || [];
+    if (msgIds.length === 0) {
+      return await message.reply('リプライ先のメッセージが見つかりません。').finally(() => message.channel.stopTyping());
+    }
 
     try {
-      if (!msgIds || msgIds.length === 0) {
-        await message.reply('リプライ先のメッセージが見つかりません。');
-        await message.channel.stopTyping();
-        return;
-      }
-
       const allMessages = await message.channel.fetchMessages();
-      const replyMessages = allMessages.filter(msg => msgIds.includes(msg.id));
+      const replyMessages = allMessages.filter(msg => msgIds.includes(msg.id) && msg.content);
 
       if (replyMessages.length === 0) {
-        await message.reply('リプライ先のメッセージが見つかりません');
-        await message.channel.stopTyping();
-        return;
+        return await message.reply('リプライ先のメッセージが見つかりません。').finally(() => message.channel.stopTyping());
       }
 
       for (const replyMessage of replyMessages) {
-        if (!replyMessage.content) {
-          await message.reply('リプライ先のメッセージが空です');
-          await message.channel.stopTyping();
-          return;  
-        }
-
         let avatarBase64 = null;
 
-        try {
-          // サイズが256だとガビガビになっちゃうので元画像を取得しておく
-          const avatarURL = replyMessage.avatarURL.replace('?max_side=256', '/original');
-          const avatarResponse = await axios.get(avatarURL, {
-            responseType: 'arraybuffer',
-          });
-          avatarBase64 = `data:image/jpeg;base64,${Buffer.from(avatarResponse.data).toString('base64')}`;
-        } catch (avatarError) {
-          console.error(`アバターのbase64への変換に失敗しました:`, avatarError);
+        if (replyMessage.avatarURL) {
+          try {
+            const avatarURL = replyMessage.avatarURL.replace('?max_side=256', '/original');
+            const avatarResponse = await axios.get(avatarURL, { responseType: 'arraybuffer' });
+            avatarBase64 = `data:image/jpeg;base64,${Buffer.from(avatarResponse.data).toString('base64')}`;
+          } catch (error) {
+            console.error('アバター画像の取得に失敗:', error);
+          }
         }
 
         const imageData = {
           text: replyMessage.content,
-          avatar: avatarBase64, 
-          username: replyMessage.username || replyMessage.authorId, 
-          display_name: replyMessage.member.displayName || replyMessage.username,
-          color: message.content.includes('color'),  // colorが含まれていればtrue
-          watermark: config.watermark, 
+          avatar: avatarBase64,
+          username: replyMessage.username || replyMessage.authorId,
+          display_name: replyMessage.member?.displayName || replyMessage.username,
+          color: message.content.includes('color'),
+          watermark: config.watermark,
         };
 
         const miq = new MiQ().setFromObject(imageData, true);
-        const response = await miq.generate(true);
+        const response = await miq.generate();
         await message.reply(response);
-        await message.channel.stopTyping();
       }
     } catch (error) {
-      console.error(`miqコマンド実行中にエラーが発生しました: ${error}`);
+      console.error('コマンド実行中にエラー:', error);
       await message.reply('コマンドの実行中にエラーが発生しました');
+    } finally {
       await message.channel.stopTyping();
     }
   },
