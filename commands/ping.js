@@ -12,6 +12,7 @@ exports.default = {
                 **API Latency**: ${end - start}ms`
             };
 
+            
             await reply.edit({ embeds: [embed] });
         } catch (error) {
             console.error(error);
