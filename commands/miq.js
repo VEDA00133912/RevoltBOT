@@ -45,7 +45,7 @@ exports.default = {
 
         const miq = new MiQ().setFromObject(imageData, true);
         const response = await miq.generate();
-        await message.reply(response);
+        await message.reply(`**[生成しました！](${response})**`);
       }
     } catch (error) {
       console.error('コマンド実行中にエラー:', error);

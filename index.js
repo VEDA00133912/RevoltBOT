@@ -15,7 +15,7 @@ const handler = new revoltHandler.Handler({
 client.once('ready', () => {
     handler.start();
     console.log(`${client.user.username} is online!`);
-    client.api.patch('/users/@me', { status: { text: `ぬぬぬぬぬぬぬぬぬ`, presence: 'Idle' } });
+    client.api.patch('/users/@me', { status: { text: `r^helpでヘルプ表示`, presence: 'Idle' } });
     console.log('Activity setup complete');
 });
 
