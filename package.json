@@ -12,13 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
-    "cross-fetch": "^4.1.0",
-    "form-data": "^4.0.1",
     "makeitaquote": "^8.1.1",
-    "mtempy": "^1.0.0",
-    "revolt-uploader": "^1.1.5",
     "revolt.js": "^7.0.5",
-    "revolthandler.js": "^2.4.31",
-    "rv-uploaderrrr": "^1.0.0"
+    "revolthandler.js": "^2.4.31"
   }
 }
